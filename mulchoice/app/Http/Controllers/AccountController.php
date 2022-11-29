@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use App\Models\Account;
 use App\Models\Category;
@@ -19,18 +19,29 @@ class AccountController extends Controller
         return view('addaccount');
     }
     public function store(Request $request){
+        $request-> validate([
+           
+            'email' => 'required|email|unique:user,email',
+            'password' => 'required|min:3',
+            'password_confirmation' => 'required|same:password'
+        ]);
         $filename = Cloudinary::upload($request->file('avatar')->getRealPath())->getSecurePath();
-        dd($filename);
+        // $image = time() . '_avatar' . '.' . $request->avatar->extension();
+        // $request->avatar->move(public_path('uploads'), $image);
+        
+        $role = "user";
+        $act = true;
         $u = Account::create([
             'username' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
-            'password' => $request->password,
-            'active' => true,
-            'avatar'
+            'password' => Hash::make($request->password),
+            'active' => $act,
+            'avatar' => $filename, 
+            'user_role' => $role
         ]);
-        return redirect()->action([AccountController::class, 'index']);
-        // echo "Record inserted successfully.<br/>";
+        // return redirect()->action([AccountController::class, 'index']);
+        echo "Record inserted successfully.<br/>";
         // $name = $request->input('name');
         
         // $data=array('name'=>$name);

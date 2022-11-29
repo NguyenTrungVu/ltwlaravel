@@ -17,5 +17,5 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::get('/account','AccountController@index');
-Route::get('/category/add','AccountController@create');
-Route::post('/category', 'AccountController@store');
+Route::get('/account/add','AccountController@create');
+Route::post('/register', 'AccountController@store');
