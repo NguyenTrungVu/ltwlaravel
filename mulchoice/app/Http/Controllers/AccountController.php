@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use App\Models\Account;
+use App\Models\User;
 use App\Models\Category;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
@@ -21,7 +23,7 @@ class AccountController extends Controller
     public function store(Request $request){
         $request-> validate([
            
-            'email' => 'required|email|unique:user,email',
+            'email' => 'required|email|unique:tb_user,email',
             'password' => 'required|min:3',
             'password_confirmation' => 'required|same:password'
         ]);
@@ -31,21 +33,41 @@ class AccountController extends Controller
         
         $role = "user";
         $act = true;
-        $u = Account::create([
+        $u = new User([
             'username' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
             'active' => $act,
             'avatar' => $filename, 
-            'user_role' => $role
+            'user_role' => $role,
+            'created_date' => time(),
         ]);
-        // return redirect()->action([AccountController::class, 'index']);
-        echo "Record inserted successfully.<br/>";
+        $u->save();
+        return redirect()->action([AccountController::class, 'loginform']);
+        // echo "Record inserted successfully.<br/>";
         // $name = $request->input('name');
         
         // $data=array('name'=>$name);
         // DB::table('category')->insert($data);
         // echo "Record inserted successfully.<br/>";
     }
+
+    public function loginform(){
+        return view('login');
+    }
+    public function login(Request $request){
+        $request-> validate([
+           'username'=>'required',
+           'password'=>'required'
+        ]);
+        // $login = DB::table('onlinepractice.user')->where('username', $request->username)->where('password', md5($password))->first();
+        if(Auth::attempt(['username'=>$request->username, 'password'=>$request->password])){
+            $request->session()->regenerate();
+ 
+            return redirect()->intended('/');
+        }
+        return back()->withErrors('password', 'Wrong username or password');
+    }
+
 }

@@ -17,5 +17,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::get('/account','AccountController@index');
-Route::get('/account/add','AccountController@create');
-Route::post('/register', 'AccountController@store');
+Route::get('/register','AccountController@create')->name('register');
+Route::post('/register', 'AccountController@store')->name('register.action');
+Route::get('/login','AccountController@loginform')->name('login');
+Route::post('/login', 'AccountController@login')->name('login.action');
+Route::get('/ques', 'QuestionController@index');
