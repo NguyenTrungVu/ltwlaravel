@@ -21,8 +21,10 @@
 @foreach($category as $p)
 <div class="col-md-3">
 <a href='#'>{{$p->name}}</a><br>
-
+<a>hello<b>{{Auth::user()->username}}</b></a>
 </div>
+
+<a class="btn btn-primary" href="{{route('logout')}}">Logout</a>
 @endforeach
 </div>
 </div>

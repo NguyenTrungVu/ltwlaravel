@@ -21,4 +21,5 @@ Route::get('/register','AccountController@create')->name('register');
 Route::post('/register', 'AccountController@store')->name('register.action');
 Route::get('/login','AccountController@loginform')->name('login');
 Route::post('/login', 'AccountController@login')->name('login.action');
+Route::get('/logout','AccountController@logout')->name('logout');
 Route::get('/ques', 'QuestionController@index');
